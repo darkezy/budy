@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>وزنة مصاريف - نظام إدارة ميزانية الأسرة</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #fafbfc;
+            --text-primary: #212529;
+            --text-secondary: #6c757d;
+            --border-color: #dee2e6;
+            --accent-color: #495057;
+            --accent-light: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --neutral-color: #6c757d;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --border-color: #30363d;
+            --accent-color: #58a6ff;
+            --accent-light: #79c0ff;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            --shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
+        body {
+            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: background 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-primary);
+            font-family: 'Cairo', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .header p {
+            font-size: 1em;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-size: 1em;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            font-family: 'Cairo', sans-serif;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .tab.active {
+            background: var(--bg-secondary);
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--accent-color);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: var(--bg-tertiary);
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: none;
+            border: 1px solid var(--border-color);
+        }
+
+        th, td {
+            padding: 12px 16px;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-row {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .subtotal-row {
+            background: #fffbf0;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        [data-theme="dark"] .subtotal-row {
+            background: #2d2a1f;
+        }
+
+        .total-row {
+            background: #f0f9f4;
+            font-weight: 600;
+            font-size: 1em;
+            color: var(--success-color);
+        }
+
+        [data-theme="dark"] .total-row {
+            background: #1a2e1f;
+        }
+
+        .grand-total-row {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.1em;
+            border-top: 2px solid var(--border-color);
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95em;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.2s ease;
+            min-height: 38px;
+        }
+
+        /* تحويل خانة الملاحظات إلى textarea */
+        input[type="text"][placeholder="ملاحظات"] {
+            display: none;
+        }
+
+        textarea.notes-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.95em;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.2s ease;
+            min-height: 38px;
+            resize: vertical;
+            overflow-y: auto;
+        }
+
+        textarea.notes-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(73, 80, 87, 0.1);
+        }
+
+        [data-theme="dark"] textarea.notes-input:focus {
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+        }
+
+        input[type="number"]:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(73, 80, 87, 0.1);
+        }
+
+        [data-theme="dark"] input[type="number"]:focus, 
+        [data-theme="dark"] input[type="text"]:focus {
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.9em;
+        }
+
+        .btn-add {
+            background: var(--success-color);
+            color: white;
+            margin: 5px;
+            border-color: var(--success-color);
+        }
+
+        .btn-add:hover {
+            background: #218838;
+            border-color: #218838;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-remove {
+            background: var(--danger-color);
+            color: white;
+            border-color: var(--danger-color);
+        }
+
+        .btn-remove:hover {
+            background: #c82333;
+            border-color: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-export {
+            background: var(--accent-color);
+            color: white;
+            padding: 12px 30px;
+            font-size: 1em;
+            margin: 20px auto;
+            display: block;
+            border-color: var(--accent-color);
+        }
+
+        .btn-export:hover {
+            background: var(--text-primary);
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .status-indicator {
+            text-align: center;
+            padding: 30px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: 600;
+            box-shadow: none;
+            transition: all 0.3s ease;
+            border: 2px solid var(--border-color);
+        }
+
+        .status-excellent {
+            background: #d4edda;
+            color: #155724;
+            border-color: #28a745;
+        }
+
+        [data-theme="dark"] .status-excellent {
+            background: #1a2e1f;
+            color: #4ade80;
+        }
+
+        .status-good {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border-color: #4caf50;
+        }
+
+        [data-theme="dark"] .status-good {
+            background: #1c2e21;
+            color: #86efac;
+        }
+
+        .status-balanced {
+            background: #e9ecef;
+            color: #495057;
+            border-color: #6c757d;
+        }
+
+        [data-theme="dark"] .status-balanced {
+            background: #21262d;
+            color: #8b949e;
+        }
+
+        .status-bad {
+            background: #fff3cd;
+            color: #856404;
+            border-color: #ffc107;
+        }
+
+        [data-theme="dark"] .status-bad {
+            background: #2d2a1a;
+            color: #fbbf24;
+        }
+
+        .status-critical {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #dc3545;
+        }
+
+        [data-theme="dark"] .status-critical {
+            background: #2e1a1d;
+            color: #f87171;
+        }
+
+        .analysis-table {
+            margin-top: 30px;
+        }
+
+        .positive {
+            color: var(--success-color);
+            font-weight: 700;
+        }
+
+        .negative {
+            color: var(--danger-color);
+            font-weight: 700;
+        }
+
+        .neutral {
+            color: var(--neutral-color);
+            font-weight: 700;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .tabs, .btn, .header, .theme-toggle {
+                display: none;
+            }
+            .container {
+                box-shadow: none;
+                border: none;
+            }
+            .tab-content {
+                display: block !important;
+                padding: 20px;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                border-radius: 6px;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .tab-content {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                border-radius: 4px;
+            }
+            .header {
+                padding: 20px 10px;
+            }
+            .header h1 {
+                font-size: 1.6em;
+                margin-bottom: 5px;
+            }
+            .header p {
+                font-size: 0.9em;
+            }
+            .theme-toggle {
+                position: static;
+                display: block;
+                margin: 0 auto 15px;
+                font-size: 0.85em;
+                padding: 8px 16px;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                padding: 12px;
+                font-size: 0.95em;
+            }
+            .tab-content {
+                padding: 15px 10px;
+            }
+            .section {
+                padding: 15px 10px;
+            }
+            .section-title {
+                font-size: 1.2em;
+            }
+            table {
+                font-size: 0.8em;
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            th, td {
+                padding: 8px 6px;
+                font-size: 0.85em;
+            }
+            input[type="text"], input[type="number"] {
+                padding: 6px 8px;
+                font-size: 0.9em;
+            }
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.85em;
+            }
+            .btn-export {
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+            .status-indicator {
+                padding: 20px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+            .container {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+            .header {
+                padding: 15px 10px;
+            }
+            .header h1 {
+                font-size: 1.3em;
+            }
+            .header p {
+                font-size: 0.8em;
+            }
+            .theme-toggle {
+                padding: 6px 12px;
+                font-size: 0.8em;
+                margin-bottom: 10px;
+            }
+            .tab {
+                padding: 10px 8px;
+                font-size: 0.85em;
+            }
+            .tab-content {
+                padding: 10px 5px;
+            }
+            .section {
+                padding: 10px 8px;
+                margin-bottom: 15px;
+            }
+            .section-title {
+                font-size: 1em;
+                padding-bottom: 8px;
+                margin-bottom: 10px;
+            }
+            table {
+                font-size: 0.75em;
+                min-width: 100%;
+            }
+            th, td {
+                padding: 6px 3px;
+                font-size: 0.9em;
+            }
+            th {
+                font-size: 0.75em;
+                padding: 8px 4px;
+            }
+            input[type="text"], input[type="number"], textarea.notes-input {
+                padding: 6px 8px;
+                font-size: 0.85em;
+                min-height: 32px;
+            }
+            .btn {
+                padding: 5px 8px;
+                font-size: 0.75em;
+                white-space: nowrap;
+            }
+            .btn-add {
+                display: inline-block;
+                width: auto;
+                margin: 3px;
+            }
+            .btn-export {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+            .status-indicator {
+                padding: 15px 10px;
+                font-size: 0.9em;
+            }
+            #status-score {
+                font-size: 1.5em !important;
+                margin-top: 5px !important;
+            }
+            .category-row {
+                font-size: 0.85em;
+            }
+            .subtotal-row, .total-row, .grand-total-row {
+                font-size: 0.9em;
+            }
+            /* تحسين عرض الجداول */
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                margin: 0 -5px;
+            }
+            table {
+                margin: 0;
+            }
+        }
+
+        /* للشاشات الصغيرة جداً (أقل من 360px) */
+        @media (max-width: 360px) {
+            .header h1 {
+                font-size: 1.1em;
+            }
+            .header p {
+                font-size: 0.75em;
+            }
+            .tab {
+                padding: 8px 5px;
+                font-size: 0.8em;
+            }
+            .section-title {
+                font-size: 0.95em;
+            }
+            table {
+                font-size: 0.7em;
+            }
+            th, td {
+                padding: 5px 2px;
+            }
+            input[type="text"], input[type="number"], textarea.notes-input {
+                padding: 5px 6px;
+                font-size: 0.8em;
+                min-height: 30px;
+            }
+            .btn {
+                padding: 4px 6px;
+                font-size: 0.7em;
+            }
+        }
+
+        /* تحسينات للجداول على الهواتف */
+        @media (max-width: 768px) {
+            .category-row td:first-child {
+                position: sticky;
+                right: 0;
+                background: var(--bg-tertiary);
+                z-index: 1;
+            }
+            .subtotal-row, .total-row, .grand-total-row {
+                font-weight: 700;
+            }
+            /* السماح بالتمرير الأفقي السلس */
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            table {
+                min-width: 600px; /* الحد الأدنى للعرض */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="theme-toggle" onclick="toggleTheme()">🌙 الوضع الليلي</button>
+            <h1>💰 وزنة مصاريف</h1>
+            <p>نظام إدارة وتحليل ميزانية الأسرة</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('income')">مصادر الدخل</button>
+            <button class="tab" onclick="switchTab('expenses')">ميزانية الأسرة</button>
+            <button class="tab" onclick="switchTab('analysis')">تحليل موقف الأسرة</button>
+        </div>
+
+        <!-- قسم مصادر الدخل -->
+        <div id="income" class="tab-content active">
+            <h2 class="section-title">📊 تحليل دخل الأسرة</h2>
+            
+            <table id="incomeTable">
+                <thead>
+                    <tr>
+                        <th style="width: 5%">م</th>
+                        <th style="width: 20%">نوع الدخل</th>
+                        <th style="width: 25%">مصدر الدخل</th>
+                        <th style="width: 20%">المبلغ الشهري</th>
+                        <th style="width: 20%">ملاحظات</th>
+                        <th style="width: 10%">إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="incomeBody">
+                    <!-- الرواتب والبدلات -->
+                    <tr class="category-row">
+                        <td>1</td>
+                        <td colspan="5"><strong>الرواتب والبدلات</strong></td>
+                    </tr>
+                    <tr data-category="salaries">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="مصدر الدخل"></td>
+                        <td><input type="number" class="income-amount" data-category="salaries" value="0" onchange="calculateIncome()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addIncomeRow('salaries')">+ إضافة مصدر</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="salaries-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- الإعانات -->
+                    <tr class="category-row">
+                        <td>2</td>
+                        <td colspan="5"><strong>الإعانات</strong></td>
+                    </tr>
+                    <tr data-category="allowances">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="مصدر الدخل"></td>
+                        <td><input type="number" class="income-amount" data-category="allowances" value="0" onchange="calculateIncome()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addIncomeRow('allowances')">+ إضافة مصدر</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="allowances-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- استثمارات -->
+                    <tr class="category-row">
+                        <td>3</td>
+                        <td colspan="5"><strong>استثمارات / مشاريع / أعمال إضافية</strong></td>
+                    </tr>
+                    <tr data-category="investments">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="مصدر الدخل"></td>
+                        <td><input type="number" class="income-amount" data-category="investments" value="0" onchange="calculateIncome()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addIncomeRow('investments')">+ إضافة مصدر</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="investments-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- مساهمات أخرى -->
+                    <tr class="category-row">
+                        <td>4</td>
+                        <td colspan="5"><strong>مساهمات أخرى</strong></td>
+                    </tr>
+                    <tr data-category="others">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="مصدر الدخل"></td>
+                        <td><input type="number" class="income-amount" data-category="others" value="0" onchange="calculateIncome()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addIncomeRow('others')">+ إضافة مصدر</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="others-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- المجاميع -->
+                    <tr class="total-row">
+                        <td></td>
+                        <td colspan="2"><strong>مجموع الدخل شهرياً</strong></td>
+                        <td><strong id="monthly-income">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr class="grand-total-row">
+                        <td></td>
+                        <td colspan="2"><strong>مجموع الدخل سنوياً</strong></td>
+                        <td><strong id="yearly-income">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td></td>
+                        <td colspan="2"><strong>إجمالي المصاريف (من جدول المصاريف)</strong></td>
+                        <td><strong id="total-expenses-display">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr class="grand-total-row">
+                        <td></td>
+                        <td colspan="2"><strong>صافي الفائض</strong></td>
+                        <td><strong id="net-surplus">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="btn btn-export" onclick="exportToPDF('income')">📥 تصدير تحليل الدخل PDF</button>
+        </div>
+
+        <!-- قسم المصاريف -->
+        <div id="expenses" class="tab-content">
+            <h2 class="section-title">💳 تحليل مصاريف الأسرة</h2>
+            
+            <table id="expensesTable">
+                <thead>
+                    <tr>
+                        <th style="width: 5%">#</th>
+                        <th style="width: 20%">نوع المصروف</th>
+                        <th style="width: 25%">بيان المصروف</th>
+                        <th style="width: 20%">المبلغ الشهري</th>
+                        <th style="width: 20%">ملاحظات</th>
+                        <th style="width: 10%">إجراء</th>
+                    </tr>
+                </thead>
+                <tbody id="expensesBody">
+                    <!-- المواصلات -->
+                    <tr class="category-row">
+                        <td>1</td>
+                        <td colspan="5"><strong>المواصلات / البنزين</strong></td>
+                    </tr>
+                    <tr data-category="transport">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="transport" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('transport')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="transport-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- البيت -->
+                    <tr class="category-row">
+                        <td>2</td>
+                        <td colspan="5"><strong>البيت / الإيجار</strong></td>
+                    </tr>
+                    <tr data-category="housing">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="housing" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('housing')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="housing-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- المقاضي -->
+                    <tr class="category-row">
+                        <td>3</td>
+                        <td colspan="5"><strong>المقاضي</strong></td>
+                    </tr>
+                    <tr data-category="groceries">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="groceries" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('groceries')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="groceries-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- الصيانة -->
+                    <tr class="category-row">
+                        <td>4</td>
+                        <td colspan="5"><strong>مصاريف صيانة / استبدال</strong></td>
+                    </tr>
+                    <tr data-category="maintenance">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="maintenance" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('maintenance')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="maintenance-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- الترفيه -->
+                    <tr class="category-row">
+                        <td>5</td>
+                        <td colspan="5"><strong>الترفيه</strong></td>
+                    </tr>
+                    <tr data-category="entertainment">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="entertainment" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('entertainment')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="entertainment-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- الصحة -->
+                    <tr class="category-row">
+                        <td>6</td>
+                        <td colspan="5"><strong>الصحة</strong></td>
+                    </tr>
+                    <tr data-category="health">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="health" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('health')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="health-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- التعليم -->
+                    <tr class="category-row">
+                        <td>7</td>
+                        <td colspan="5"><strong>التعليم</strong></td>
+                    </tr>
+                    <tr data-category="education">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="education" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('education')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="education-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- الصدقات -->
+                    <tr class="category-row">
+                        <td>8</td>
+                        <td colspan="5"><strong>الصدقات / الزكاة / الهبات</strong></td>
+                    </tr>
+                    <tr data-category="charity">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="charity" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('charity')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="charity-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- الالتزامات -->
+                    <tr class="category-row">
+                        <td>9</td>
+                        <td colspan="5"><strong>الالتزامات / الديون</strong></td>
+                    </tr>
+                    <tr data-category="debts">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="debts" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('debts')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="debts-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- الادخار -->
+                    <tr class="category-row">
+                        <td>10</td>
+                        <td colspan="5"><strong>ادخار / طوارئ</strong></td>
+                    </tr>
+                    <tr data-category="savings">
+                        <td></td>
+                        <td></td>
+                        <td><input type="text" placeholder="بيان المصروف"></td>
+                        <td><input type="number" class="expense-amount" data-category="savings" value="0" onchange="calculateExpenses()"></td>
+                        <td><input type="text" placeholder="ملاحظات"></td>
+                        <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td><button class="btn btn-add" onclick="addExpenseRow('savings')">+ إضافة بند</button></td>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr class="subtotal-row">
+                        <td></td>
+                        <td colspan="2"><strong>المجموع</strong></td>
+                        <td><strong id="savings-total">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+
+                    <!-- المجاميع -->
+                    <tr class="total-row">
+                        <td></td>
+                        <td colspan="2"><strong>مجموع المصاريف شهرياً</strong></td>
+                        <td><strong id="monthly-expenses">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+                    <tr class="grand-total-row">
+                        <td></td>
+                        <td colspan="2"><strong>مجموع المصاريف سنوياً</strong></td>
+                        <td><strong id="yearly-expenses">0</strong></td>
+                        <td colspan="2"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="btn btn-export" onclick="exportToPDF('expenses')">📥 تصدير تحليل المصاريف PDF</button>
+        </div>
+
+        <!-- قسم التحليل -->
+        <div id="analysis" class="tab-content">
+            <h2 class="section-title">📈 تحليل موقف الأسرة</h2>
+            
+            <div id="status-display" class="status-indicator">
+                <div id="status-text">قم بإدخال البيانات لعرض التحليل</div>
+                <div id="status-score" style="font-size: 2em; margin-top: 10px;"></div>
+            </div>
+
+            <table class="analysis-table">
+                <thead>
+                    <tr>
+                        <th>النتيجة</th>
+                        <th>الموقف</th>
+                        <th>التطوير المقترح</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="positive">+5</td>
+                        <td>ممتاز جداً</td>
+                        <td>استمر في نفس النهج وزد الاستثمارات</td>
+                    </tr>
+                    <tr>
+                        <td class="positive">+4</td>
+                        <td>ممتاز</td>
+                        <td>وضع ممتاز، فكر في فرص استثمارية جديدة</td>
+                    </tr>
+                    <tr>
+                        <td class="positive">+3</td>
+                        <td>جيد جداً</td>
+                        <td>حافظ على هذا المستوى وراجع خطة الادخار</td>
+                    </tr>
+                    <tr>
+                        <td class="positive">+2</td>
+                        <td>جيد</td>
+                        <td>حاول زيادة الفائض من خلال تقليل المصاريف غير الضرورية</td>
+                    </tr>
+                    <tr>
+                        <td class="positive">+1</td>
+                        <td>مناسب</td>
+                        <td>ابحث عن طرق لزيادة الدخل أو تقليل المصاريف</td>
+                    </tr>
+                    <tr>
+                        <td class="neutral">0</td>
+                        <td>متوازن</td>
+                        <td>الوضع متوازن، لكن يحتاج إلى بناء احتياطي للطوارئ</td>
+                    </tr>
+                    <tr>
+                        <td class="negative">-1</td>
+                        <td>تراجع</td>
+                        <td>راجع المصاريف وابحث عن مصادر دخل إضافية</td>
+                    </tr>
+                    <tr>
+                        <td class="negative">-2</td>
+                        <td>غير جيد</td>
+                        <td>قلل المصاريف غير الضرورية فوراً</td>
+                    </tr>
+                    <tr>
+                        <td class="negative">-3</td>
+                        <td>سيئ</td>
+                        <td>أعد هيكلة الميزانية وقلل المصاريف بشكل كبير</td>
+                    </tr>
+                    <tr>
+                        <td class="negative">-4</td>
+                        <td>سيئ جداً</td>
+                        <td>تدخل عاجل مطلوب - راجع جميع الالتزامات والديون</td>
+                    </tr>
+                    <tr>
+                        <td class="negative">-5</td>
+                        <td>يحتاج تدخل عاجل</td>
+                        <td>استشر مستشار مالي فوراً وأعد هيكلة الديون</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="btn btn-export" onclick="exportToPDF('analysis')">📥 تصدير التحليل PDF</button>
+        </div>
+    </div>
+
+    <script>
+        // التبديل بين الوضع الليلي والنهاري
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const themeButton = document.querySelector('.theme-toggle');
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            if (newTheme === 'dark') {
+                themeButton.innerHTML = '☀️ الوضع النهاري';
+            } else {
+                themeButton.innerHTML = '🌙 الوضع الليلي';
+            }
+        }
+
+        // تحميل الثيم المحفوظ
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const themeButton = document.querySelector('.theme-toggle');
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            if (savedTheme === 'dark') {
+                themeButton.innerHTML = '☀️ الوضع النهاري';
+            }
+        }
+
+        // التنقل بين الأقسام
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            if (tabName === 'analysis') {
+                updateAnalysis();
+            }
+        }
+
+        // إضافة صف دخل جديد
+        function addIncomeRow(category) {
+            const tbody = document.getElementById('incomeBody');
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-category', category);
+            newRow.innerHTML = `
+                <td></td>
+                <td></td>
+                <td><input type="text" placeholder="مصدر الدخل"></td>
+                <td><input type="number" class="income-amount" data-category="${category}" value="0" onchange="calculateIncome()"></td>
+                <td><textarea class="notes-input" placeholder="ملاحظات" rows="1"></textarea></td>
+                <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
+            `;
+            
+            // البحث عن صف زر الإضافة الخاص بهذه الفئة
+            const allRows = Array.from(tbody.querySelectorAll('tr'));
+            let addButtonRow = null;
+            let foundCategory = false;
+            
+            for (let i = 0; i < allRows.length; i++) {
+                const row = allRows[i];
+                // التحقق من صف الفئة
+                if (row.classList.contains('category-row') && row.textContent.includes(getCategoryName(category))) {
+                    foundCategory = true;
+                    continue;
+                }
+                // البحث عن صف زر الإضافة بعد الفئة
+                if (foundCategory && row.querySelector('.btn-add')) {
+                    addButtonRow = row;
+                    break;
+                }
+            }
+            
+            if (addButtonRow) {
+                tbody.insertBefore(newRow, addButtonRow);
+                autoResizeTextareas();
+            }
+        }
+
+        // دالة مساعدة للحصول على اسم الفئة
+        function getCategoryName(category) {
+            const names = {
+                'salaries': 'الرواتب والبدلات',
+                'allowances': 'الإعانات',
+                'investments': 'استثمارات',
+                'others': 'مساهمات أخرى'
+            };
+            return names[category] || '';
+        }
+
+        // حذف صف دخل
+        function removeIncomeRow(btn) {
+            btn.closest('tr').remove();
+            calculateIncome();
+        }
+
+        // إضافة صف مصروف جديد
+        function addExpenseRow(category) {
+            const tbody = document.getElementById('expensesBody');
+            const newRow = document.createElement('tr');
+            newRow.setAttribute('data-category', category);
+            newRow.innerHTML = `
+                <td></td>
+                <td></td>
+                <td><input type="text" placeholder="بيان المصروف"></td>
+                <td><input type="number" class="expense-amount" data-category="${category}" value="0" onchange="calculateExpenses()"></td>
+                <td><textarea class="notes-input" placeholder="ملاحظات" rows="1"></textarea></td>
+                <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
+            `;
+            
+            // البحث عن صف زر الإضافة الخاص بهذه الفئة
+            const allRows = Array.from(tbody.querySelectorAll('tr'));
+            let addButtonRow = null;
+            let foundCategory = false;
+            
+            for (let i = 0; i < allRows.length; i++) {
+                const row = allRows[i];
+                // التحقق من صف الفئة
+                if (row.classList.contains('category-row') && row.textContent.includes(getExpenseCategoryName(category))) {
+                    foundCategory = true;
+                    continue;
+                }
+                // البحث عن صف زر الإضافة بعد الفئة
+                if (foundCategory && row.querySelector('.btn-add')) {
+                    addButtonRow = row;
+                    break;
+                }
+            }
+            
+            if (addButtonRow) {
+                tbody.insertBefore(newRow, addButtonRow);
+                autoResizeTextareas();
+            }
+        }
+
+        // دالة مساعدة للحصول على اسم فئة المصروف
+        function getExpenseCategoryName(category) {
+            const names = {
+                'transport': 'المواصلات',
+                'housing': 'البيت',
+                'groceries': 'المقاضي',
+                'maintenance': 'صيانة',
+                'entertainment': 'الترفيه',
+                'health': 'الصحة',
+                'education': 'التعليم',
+                'charity': 'الصدقات',
+                'debts': 'الالتزامات',
+                'savings': 'ادخار'
+            };
+            return names[category] || '';
+        }
+
+        // حذف صف مصروف
+        function removeExpenseRow(btn) {
+            btn.closest('tr').remove();
+            calculateExpenses();
+        }
+
+        // حساب الدخل
+        function calculateIncome() {
+            const categories = ['salaries', 'allowances', 'investments', 'others'];
+            let totalMonthly = 0;
+
+            categories.forEach(category => {
+                const inputs = document.querySelectorAll(`.income-amount[data-category="${category}"]`);
+                let categoryTotal = 0;
+                
+                inputs.forEach(input => {
+                    categoryTotal += parseFloat(input.value) || 0;
+                });
+                
+                document.getElementById(`${category}-total`).textContent = categoryTotal.toLocaleString();
+                totalMonthly += categoryTotal;
+            });
+
+            document.getElementById('monthly-income').textContent = totalMonthly.toLocaleString();
+            document.getElementById('yearly-income').textContent = (totalMonthly * 12).toLocaleString();
+            
+            calculateNetSurplus();
+        }
+
+        // حساب المصاريف
+        function calculateExpenses() {
+            const categories = ['transport', 'housing', 'groceries', 'maintenance', 'entertainment', 
+                              'health', 'education', 'charity', 'debts', 'savings'];
+            let totalMonthly = 0;
+
+            categories.forEach(category => {
+                const inputs = document.querySelectorAll(`.expense-amount[data-category="${category}"]`);
+                let categoryTotal = 0;
+                
+                inputs.forEach(input => {
+                    categoryTotal += parseFloat(input.value) || 0;
+                });
+                
+                document.getElementById(`${category}-total`).textContent = categoryTotal.toLocaleString();
+                totalMonthly += categoryTotal;
+            });
+
+            document.getElementById('monthly-expenses').textContent = totalMonthly.toLocaleString();
+            document.getElementById('yearly-expenses').textContent = (totalMonthly * 12).toLocaleString();
+            
+            calculateNetSurplus();
+        }
+
+        // حساب صافي الفائض
+        function calculateNetSurplus() {
+            const yearlyIncome = parseFloat(document.getElementById('yearly-income').textContent.replace(/,/g, '')) || 0;
+            const yearlyExpenses = parseFloat(document.getElementById('yearly-expenses').textContent.replace(/,/g, '')) || 0;
+            const netSurplus = yearlyIncome - yearlyExpenses;
+            
+            document.getElementById('total-expenses-display').textContent = yearlyExpenses.toLocaleString();
+            document.getElementById('net-surplus').textContent = netSurplus.toLocaleString();
+            
+            const surplusCell = document.getElementById('net-surplus').parentElement;
+            surplusCell.style.color = netSurplus > 0 ? '#28a745' : netSurplus < 0 ? '#dc3545' : '#6c757d';
+        }
+
+        // تحديث التحليل
+        function updateAnalysis() {
+            const yearlyIncome = parseFloat(document.getElementById('yearly-income').textContent.replace(/,/g, '')) || 0;
+            const yearlyExpenses = parseFloat(document.getElementById('yearly-expenses').textContent.replace(/,/g, '')) || 0;
+            
+            if (yearlyIncome === 0 && yearlyExpenses === 0) {
+                document.getElementById('status-text').textContent = 'قم بإدخال بيانات الدخل والمصاريف لعرض التحليل';
+                document.getElementById('status-score').textContent = '';
+                document.getElementById('status-display').className = 'status-indicator';
+                return;
+            }
+            
+            const netSurplus = yearlyIncome - yearlyExpenses;
+            const percentage = (netSurplus / yearlyIncome) * 100;
+            
+            // حساب النتيجة بناء على النسبة المئوية (كل 20% = 1 نقطة)
+            const score = Math.round(percentage / 20);
+            const clampedScore = Math.max(-5, Math.min(5, score));
+            
+            const statusMap = {
+                5: { text: 'ممتاز جداً', class: 'status-excellent', advice: 'استمر في نفس النهج وزد الاستثمارات' },
+                4: { text: 'ممتاز', class: 'status-excellent', advice: 'وضع ممتاز، فكر في فرص استثمارية جديدة' },
+                3: { text: 'جيد جداً', class: 'status-good', advice: 'حافظ على هذا المستوى وراجع خطة الادخار' },
+                2: { text: 'جيد', class: 'status-good', advice: 'حاول زيادة الفائض من خلال تقليل المصاريف غير الضرورية' },
+                1: { text: 'مناسب', class: 'status-good', advice: 'ابحث عن طرق لزيادة الدخل أو تقليل المصاريف' },
+                0: { text: 'متوازن', class: 'status-balanced', advice: 'الوضع متوازن، لكن يحتاج إلى بناء احتياطي للطوارئ' },
+                '-1': { text: 'تراجع', class: 'status-bad', advice: 'راجع المصاريف وابحث عن مصادر دخل إضافية' },
+                '-2': { text: 'غير جيد', class: 'status-bad', advice: 'قلل المصاريف غير الضرورية فوراً' },
+                '-3': { text: 'سيئ', class: 'status-bad', advice: 'أعد هيكلة الميزانية وقلل المصاريف بشكل كبير' },
+                '-4': { text: 'سيئ جداً', class: 'status-critical', advice: 'تدخل عاجل مطلوب - راجع جميع الالتزامات والديون' },
+                '-5': { text: 'يحتاج تدخل عاجل', class: 'status-critical', advice: 'استشر مستشار مالي فوراً وأعد هيكلة الديون' }
+            };
+            
+            const status = statusMap[clampedScore];
+            document.getElementById('status-text').innerHTML = `
+                <div style="font-size: 1.2em; margin-bottom: 10px;">موقف الأسرة: ${status.text}</div>
+                <div style="font-size: 0.9em; opacity: 0.95; line-height: 1.6;">
+                    <strong>التطوير المقترح:</strong> ${status.advice}
+                </div>
+            `;
+            document.getElementById('status-score').textContent = `النتيجة: ${clampedScore > 0 ? '+' : ''}${clampedScore}`;
+            document.getElementById('status-display').className = `status-indicator ${status.class}`;
+        }
+
+        // تصدير PDF
+        function exportToPDF(section) {
+            window.print();
+        }
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            calculateIncome();
+            calculateExpenses();
+            wrapTablesForMobile();
+            convertNotesToTextarea();
+            setupTextareaAutoResize();
+        });
+
+        // تحويل حقول الملاحظات إلى textarea
+        function convertNotesToTextarea() {
+            const notesInputs = document.querySelectorAll('input[placeholder="ملاحظات"]');
+            notesInputs.forEach(input => {
+                const textarea = document.createElement('textarea');
+                textarea.className = 'notes-input';
+                textarea.placeholder = 'ملاحظات';
+                textarea.rows = 1;
+                textarea.value = input.value;
+                input.parentNode.replaceChild(textarea, input);
+            });
+            autoResizeTextareas();
+        }
+
+        // تفعيل تغيير الحجم التلقائي للـ textarea
+        function setupTextareaAutoResize() {
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('notes-input')) {
+                    autoResizeTextarea(e.target);
+                }
+            });
+        }
+
+        // تغيير حجم textarea واحد
+        function autoResizeTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+
+        // تغيير حجم جميع الـ textareas
+        function autoResizeTextareas() {
+            const textareas = document.querySelectorAll('.notes-input');
+            textareas.forEach(textarea => {
+                autoResizeTextarea(textarea);
+            });
+        }
+
+        // تغليف الجداول لتحسين العرض على الهواتف
+        function wrapTablesForMobile() {
+            const tables = document.querySelectorAll('table');
+            tables.forEach(table => {
+                if (!table.parentElement.classList.contains('table-wrapper')) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'table-wrapper';
+                    table.parentNode.insertBefore(wrapper, table);
+                    wrapper.appendChild(table);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
