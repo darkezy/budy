@@ -685,6 +685,7 @@
             }
         }
     </style>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div class="container">
@@ -1213,6 +1214,17 @@
     </div>
 
     <script>
+    const tg = window.Telegram.WebApp;
+
+    tg.ready();                 // إعلام تيليغرام أن التطبيق جاهز
+    tg.expand();                // فتح التطبيق بكامل الارتفاع
+    tg.disableVerticalSwipes(); // منع الإغلاق بالخطأ
+
+    // ربط الثيم تلقائيًا
+    if (tg.colorScheme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+    }
+
         // التبديل بين الوضع الليلي والنهاري
         function toggleTheme() {
             const html = document.documentElement;
