@@ -248,37 +248,14 @@
             color: var(--text-primary);
             font-family: 'Cairo', sans-serif;
             transition: all 0.2s ease;
-            min-height: 38px;
+            min-height: 36px;
         }
 
-        /* تحويل خانة الملاحظات إلى textarea */
-        input[type="text"][placeholder="ملاحظات"] {
-            display: none;
-        }
-
-        textarea.notes-input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 0.95em;
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-            font-family: 'Cairo', sans-serif;
-            transition: all 0.2s ease;
-            min-height: 38px;
-            resize: vertical;
-            overflow-y: auto;
-        }
-
-        textarea.notes-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(73, 80, 87, 0.1);
-        }
-
-        [data-theme="dark"] textarea.notes-input:focus {
-            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+        /* تصغير خانات الأرقام */
+        input[type="number"] {
+            max-width: 150px;
+            text-align: center;
+            font-weight: 600;
         }
 
         input[type="number"]:focus, input[type="text"]:focus {
@@ -588,11 +565,6 @@
                 font-size: 0.75em;
                 padding: 8px 4px;
             }
-            input[type="text"], input[type="number"], textarea.notes-input {
-                padding: 6px 8px;
-                font-size: 0.85em;
-                min-height: 32px;
-            }
             .btn {
                 padding: 5px 8px;
                 font-size: 0.75em;
@@ -653,11 +625,6 @@
             th, td {
                 padding: 5px 2px;
             }
-            input[type="text"], input[type="number"], textarea.notes-input {
-                padding: 5px 6px;
-                font-size: 0.8em;
-                min-height: 30px;
-            }
             .btn {
                 padding: 4px 6px;
                 font-size: 0.7em;
@@ -685,7 +652,6 @@
             }
         }
     </style>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
     <div class="container">
@@ -708,11 +674,10 @@
             <table id="incomeTable">
                 <thead>
                     <tr>
-                        <th style="width: 5%">م</th>
-                        <th style="width: 20%">نوع الدخل</th>
-                        <th style="width: 25%">مصدر الدخل</th>
-                        <th style="width: 20%">المبلغ الشهري</th>
-                        <th style="width: 20%">ملاحظات</th>
+                        <th style="width: 8%">م</th>
+                        <th style="width: 25%">نوع الدخل</th>
+                        <th style="width: 35%">مصدر الدخل</th>
+                        <th style="width: 22%">المبلغ الشهري</th>
                         <th style="width: 10%">إجراء</th>
                     </tr>
                 </thead>
@@ -727,19 +692,18 @@
                         <td></td>
                         <td><input type="text" placeholder="مصدر الدخل"></td>
                         <td><input type="number" class="income-amount" data-category="salaries" value="0" onchange="calculateIncome()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addIncomeRow('salaries')">+ إضافة مصدر</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="salaries-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- الإعانات -->
@@ -752,19 +716,18 @@
                         <td></td>
                         <td><input type="text" placeholder="مصدر الدخل"></td>
                         <td><input type="number" class="income-amount" data-category="allowances" value="0" onchange="calculateIncome()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addIncomeRow('allowances')">+ إضافة مصدر</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="allowances-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- استثمارات -->
@@ -777,19 +740,18 @@
                         <td></td>
                         <td><input type="text" placeholder="مصدر الدخل"></td>
                         <td><input type="number" class="income-amount" data-category="investments" value="0" onchange="calculateIncome()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addIncomeRow('investments')">+ إضافة مصدر</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="investments-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- مساهمات أخرى -->
@@ -802,19 +764,18 @@
                         <td></td>
                         <td><input type="text" placeholder="مصدر الدخل"></td>
                         <td><input type="number" class="income-amount" data-category="others" value="0" onchange="calculateIncome()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addIncomeRow('others')">+ إضافة مصدر</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="others-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- المجاميع -->
@@ -822,25 +783,25 @@
                         <td></td>
                         <td colspan="2"><strong>مجموع الدخل شهرياً</strong></td>
                         <td><strong id="monthly-income">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
                     <tr class="grand-total-row">
                         <td></td>
                         <td colspan="2"><strong>مجموع الدخل سنوياً</strong></td>
                         <td><strong id="yearly-income">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
                     <tr class="total-row">
                         <td></td>
                         <td colspan="2"><strong>إجمالي المصاريف (من جدول المصاريف)</strong></td>
                         <td><strong id="total-expenses-display">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
                     <tr class="grand-total-row">
                         <td></td>
                         <td colspan="2"><strong>صافي الفائض</strong></td>
                         <td><strong id="net-surplus">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -855,11 +816,10 @@
             <table id="expensesTable">
                 <thead>
                     <tr>
-                        <th style="width: 5%">#</th>
-                        <th style="width: 20%">نوع المصروف</th>
-                        <th style="width: 25%">بيان المصروف</th>
-                        <th style="width: 20%">المبلغ الشهري</th>
-                        <th style="width: 20%">ملاحظات</th>
+                        <th style="width: 8%">#</th>
+                        <th style="width: 25%">نوع المصروف</th>
+                        <th style="width: 35%">بيان المصروف</th>
+                        <th style="width: 22%">المبلغ الشهري</th>
                         <th style="width: 10%">إجراء</th>
                     </tr>
                 </thead>
@@ -874,19 +834,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="transport" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('transport')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="transport-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- البيت -->
@@ -899,19 +858,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="housing" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('housing')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="housing-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- المقاضي -->
@@ -924,19 +882,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="groceries" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('groceries')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="groceries-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- الصيانة -->
@@ -949,19 +906,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="maintenance" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('maintenance')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="maintenance-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- الترفيه -->
@@ -974,19 +930,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="entertainment" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('entertainment')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="entertainment-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- الصحة -->
@@ -999,19 +954,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="health" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('health')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="health-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- التعليم -->
@@ -1024,19 +978,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="education" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('education')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="education-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- الصدقات -->
@@ -1049,19 +1002,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="charity" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('charity')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="charity-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- الالتزامات -->
@@ -1074,19 +1026,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="debts" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('debts')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="debts-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- الادخار -->
@@ -1099,19 +1050,18 @@
                         <td></td>
                         <td><input type="text" placeholder="بيان المصروف"></td>
                         <td><input type="number" class="expense-amount" data-category="savings" value="0" onchange="calculateExpenses()"></td>
-                        <td><input type="text" placeholder="ملاحظات"></td>
                         <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
                     </tr>
                     <tr>
                         <td colspan="2"></td>
                         <td><button class="btn btn-add" onclick="addExpenseRow('savings')">+ إضافة بند</button></td>
-                        <td colspan="3"></td>
+                        <td colspan="2"></td>
                     </tr>
                     <tr class="subtotal-row">
                         <td></td>
                         <td colspan="2"><strong>المجموع</strong></td>
                         <td><strong id="savings-total">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
 
                     <!-- المجاميع -->
@@ -1119,13 +1069,13 @@
                         <td></td>
                         <td colspan="2"><strong>مجموع المصاريف شهرياً</strong></td>
                         <td><strong id="monthly-expenses">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
                     <tr class="grand-total-row">
                         <td></td>
                         <td colspan="2"><strong>مجموع المصاريف سنوياً</strong></td>
                         <td><strong id="yearly-expenses">0</strong></td>
-                        <td colspan="2"></td>
+                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -1214,17 +1164,6 @@
     </div>
 
     <script>
-    const tg = window.Telegram.WebApp;
-
-    tg.ready();                 // إعلام تيليغرام أن التطبيق جاهز
-    tg.expand();                // فتح التطبيق بكامل الارتفاع
-    tg.disableVerticalSwipes(); // منع الإغلاق بالخطأ
-
-    // ربط الثيم تلقائيًا
-    if (tg.colorScheme === "dark") {
-        document.documentElement.setAttribute("data-theme", "dark");
-    }
-
         // التبديل بين الوضع الليلي والنهاري
         function toggleTheme() {
             const html = document.documentElement;
@@ -1279,7 +1218,6 @@
                 <td></td>
                 <td><input type="text" placeholder="مصدر الدخل"></td>
                 <td><input type="number" class="income-amount" data-category="${category}" value="0" onchange="calculateIncome()"></td>
-                <td><textarea class="notes-input" placeholder="ملاحظات" rows="1"></textarea></td>
                 <td><button class="btn btn-remove" onclick="removeIncomeRow(this)">حذف</button></td>
             `;
             
@@ -1304,7 +1242,6 @@
             
             if (addButtonRow) {
                 tbody.insertBefore(newRow, addButtonRow);
-                autoResizeTextareas();
             }
         }
 
@@ -1335,7 +1272,6 @@
                 <td></td>
                 <td><input type="text" placeholder="بيان المصروف"></td>
                 <td><input type="number" class="expense-amount" data-category="${category}" value="0" onchange="calculateExpenses()"></td>
-                <td><textarea class="notes-input" placeholder="ملاحظات" rows="1"></textarea></td>
                 <td><button class="btn btn-remove" onclick="removeExpenseRow(this)">حذف</button></td>
             `;
             
@@ -1360,7 +1296,6 @@
             
             if (addButtonRow) {
                 tbody.insertBefore(newRow, addButtonRow);
-                autoResizeTextareas();
             }
         }
 
@@ -1502,46 +1437,7 @@
             calculateIncome();
             calculateExpenses();
             wrapTablesForMobile();
-            convertNotesToTextarea();
-            setupTextareaAutoResize();
         });
-
-        // تحويل حقول الملاحظات إلى textarea
-        function convertNotesToTextarea() {
-            const notesInputs = document.querySelectorAll('input[placeholder="ملاحظات"]');
-            notesInputs.forEach(input => {
-                const textarea = document.createElement('textarea');
-                textarea.className = 'notes-input';
-                textarea.placeholder = 'ملاحظات';
-                textarea.rows = 1;
-                textarea.value = input.value;
-                input.parentNode.replaceChild(textarea, input);
-            });
-            autoResizeTextareas();
-        }
-
-        // تفعيل تغيير الحجم التلقائي للـ textarea
-        function setupTextareaAutoResize() {
-            document.addEventListener('input', function(e) {
-                if (e.target.classList.contains('notes-input')) {
-                    autoResizeTextarea(e.target);
-                }
-            });
-        }
-
-        // تغيير حجم textarea واحد
-        function autoResizeTextarea(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = (textarea.scrollHeight) + 'px';
-        }
-
-        // تغيير حجم جميع الـ textareas
-        function autoResizeTextareas() {
-            const textareas = document.querySelectorAll('.notes-input');
-            textareas.forEach(textarea => {
-                autoResizeTextarea(textarea);
-            });
-        }
 
         // تغليف الجداول لتحسين العرض على الهواتف
         function wrapTablesForMobile() {
